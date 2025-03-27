@@ -1,6 +1,8 @@
 name: PR and Merge Validation
 
 on:
+  workflow_call: 
+  
   pull_request:
     branches:
       - dev
