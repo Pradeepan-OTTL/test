@@ -1,0 +1,29 @@
+name: PR and Merge Validation
+
+on:
+  workflow_call: 
+  
+  pull_request:
+    branches:
+      - dev
+      - test
+      - main
+  push:
+    branches:
+      - dev
+      - main
+
+jobs:
+  validate-pr:
+    runs-on: test
+    steps:
+      - name: Check PR Conditions
+        if: github.event_name == 'pull_request' && contains(fromJson('["dev", "test", "main"]'), github.event.pull_request.base.ref)
+        run: echo "PR is targeting dev, test, or main!"
+
+  validate-merge:
+    runs-on: test
+    if: github.event_name == 'push'
+    steps:
+      - name: Check Merge Conditions
+        run: echo "Code has been merged into dev, or main!"
