@@ -9,7 +9,7 @@ jobs:
     
   DevDeployment:
     name: Dev Deployment
-    if: github.event.ref == 'refs/heads/main'
+    if: github.event.ref == 'refs/heads/master'
     runs-on: test
     environment: 
       name: Development
@@ -19,7 +19,7 @@ jobs:
     
   StagingDeployment:
     name: Staging Deployment
-    if: github.event.ref == 'refs/heads/main'
+    if: github.event.ref == 'refs/heads/master'
     needs: [DevDeployment]
     runs-on: test
     environment: 
@@ -30,7 +30,7 @@ jobs:
             
   ProdDeployment:
     name: Production Deployment
-    if: github.event.ref == 'refs/heads/main'
+    if: github.event.ref == 'refs/heads/master'
     needs: [StagingDeployment]
     runs-on: test
     environment: 
