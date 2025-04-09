@@ -37,3 +37,25 @@ jobs:
     steps:
       - name: Deploy
         run: echo ProdDeployment!
+
+  CreateReleaseTag:
+    name: Create Release Tag
+    if: github.ref == 'refs/heads/master'
+    needs: [ProdDeployment]
+    runs-on: test
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Release Tag (e.g., v1.0.0)
+        id: vars
+        run: |
+          TAG_NAME="v$(date +'%Y.%m.%d.%H%M%S')"
+          echo "tag_name=$TAG_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Create Git Tag
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git tag ${{ steps.vars.outputs.tag_name }}
+          git push origin ${{ steps.vars.outputs.tag_name }}
