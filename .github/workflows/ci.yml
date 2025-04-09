@@ -6,36 +6,34 @@ on:
   workflow_dispatch:
 
 jobs:
-    
   DevDeployment:
     name: Dev Deployment
-    if: github.event.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
     runs-on: test
-    environment: 
+    environment:
       name: Development
     steps:
       - name: Deploy
         run: echo DevDeployment! 
-    
+
   StagingDeployment:
     name: Staging Deployment
-    if: github.event.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
     needs: [DevDeployment]
     runs-on: test
-    environment: 
+    environment:
       name: Staging
     steps:
       - name: Deploy
-        run: echo StagingDeployment! 
-            
+        run: echo StagingDeployment!
+
   ProdDeployment:
     name: Production Deployment
-    if: github.event.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
     needs: [StagingDeployment]
     runs-on: test
-    environment: 
+    environment:
       name: Production
     steps:
       - name: Deploy
-        run: echo ProdDeployment! 
-    
+        run: echo ProdDeployment!
