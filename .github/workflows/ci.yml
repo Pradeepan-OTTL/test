@@ -20,7 +20,7 @@ jobs:
       - name: Deploy
         run: |
             cat /home/ubuntu/actions-runner/_work/_temp/_github_workflow/event.json
-            PR_NUMBER=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/pulls?state=closed&sort=updated&direction=desc" | jq '.[0].number')
+            PR_NUMBER=$(curl -s -H "Authorization: token ${{ secrets.TOKEN_GITHUB }}" "https://api.github.com/repos/${{ github.repository }}/pulls?state=closed&sort=updated&direction=desc" | jq '.[0].number')
             echo "Last PR Number: $PR_NUMBER"
             printenv
             echo DevDeployment! 
