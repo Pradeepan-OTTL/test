@@ -1,8 +1,8 @@
 name: Backend Deployment
 
 on:
-  pull_request:
-    types: [closed]
+  push:
+    branches: [ master ]
   workflow_dispatch:
   workflow_call:
 
@@ -12,24 +12,26 @@ permissions:
 jobs:
   DevDeployment:
     name: Dev Deployment
-    if: github.event.pull_request.merged == 'true' && github.event.pull_request.base.ref == 'master'
+    if: github.ref == 'refs/heads/master'
     runs-on: test
     environment:
       name: Development
     steps:
       - name: Deploy
         run: |
-            PR_NUMBER=${{ github.event.pull_request.number }}
-            SOURCE_BRANCH=${{ github.event.pull_request.head.ref }}
-            echo "PR Number: $PR_NUMBER"
-            echo "Source Branch: $SOURCE_BRANCH"
+            cat /home/ubuntu/actions-runner/_work/_temp/_github_workflow/event.json
+            PR_INFO=$(curl -s -H "Authorization: token ${{ secrets.TOKEN_GITHUB }}" "https://api.github.com/repos/${{ github.repository }}/pulls?state=closed&sort=updated&direction=desc" | jq '.[0] | {number: .number, source_branch: .head.ref}')
+            PR_NUMBER=$(echo "$PR_INFO" | jq '.number')
+            SOURCE_BRANCH=$(echo "$PR_INFO" | jq -r '.source_branch')
+            echo "Last PR Number: $PR_NUMBER"
+            echo "SOURCE_BRANCH: $SOURCE_BRANCH"
             printenv
             echo DevDeployment! 
 
 
   StagingDeployment:
     name: Staging Deployment
-    if: github.event.pull_request.merged == 'true' && github.event.pull_request.base.ref == 'master'
+    if: github.ref == 'refs/heads/master'
     needs: [DevDeployment]
     runs-on: test
     environment:
@@ -40,7 +42,7 @@ jobs:
 
   ProdDeployment:
     name: Production Deployment
-    if: github.event.pull_request.merged == 'true' && github.event.pull_request.base.ref == 'master'
+    if: github.ref == 'refs/heads/master'
     needs: [StagingDeployment]
     runs-on: test
     environment:
@@ -51,7 +53,7 @@ jobs:
 
   CreateReleaseTag:
     name: Create Release Tag
-    if: github.event.pull_request.merged == 'true' && github.event.pull_request.base.ref == 'master'
+    if: github.ref == 'refs/heads/master'
     needs: [ProdDeployment]
     runs-on: test
     steps:
