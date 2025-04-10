@@ -12,7 +12,7 @@ permissions:
 jobs:
   DevDeployment:
     name: Dev Deployment
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master' || github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'hotfix')
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master' || github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master' && startsWith(github.event.pull_request.head.ref, 'hotfix')
     runs-on: test
     environment:
       name: Development
@@ -32,7 +32,7 @@ jobs:
 
   StagingDeployment:
     name: Staging Deployment
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master'
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master' && !startsWith(github.event.pull_request.head.ref, 'hotfix')
     needs: [DevDeployment]
     runs-on: test
     environment:
@@ -43,7 +43,7 @@ jobs:
   
   hotfixStagingDeployment:
     name: Staging Deployment
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master'
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master' || github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master' && startsWith(github.event.pull_request.head.ref, 'hotfix')
     needs: [DevDeployment]
     runs-on: test
     environment:
@@ -54,7 +54,7 @@ jobs:
 
   ProdDeployment:
     name: Production Deployment
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master' || github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'hotfix')
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master' || github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master' && startsWith(github.event.pull_request.head.ref, 'hotfix')
     needs: [StagingDeployment]
     runs-on: test
     environment:
@@ -65,7 +65,7 @@ jobs:
 
   CreateReleaseTag:
     name: Create Release Tag
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master' || github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'hotfix')
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master' || github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master' && startsWith(github.event.pull_request.head.ref, 'hotfix')
     needs: [ProdDeployment]
     runs-on: test
     steps:
