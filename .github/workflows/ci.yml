@@ -12,13 +12,15 @@ permissions:
 jobs:
   DevDeployment:
     name: Dev Deployment
-    if: github.event.pull_request.merged == 'true' && github.event.pull_request.base.ref == 'master'
     runs-on: test
     environment:
       name: Development
     steps:
       - name: Deploy
         run: |
+            echo "PR Merged: ${{ github.event.pull_request.merged }}"
+            echo "Base Ref: ${{ github.event.pull_request.base.ref }}"
+            echo "Head Ref: ${{ github.event.pull_request.head.ref }}"
             PR_NUMBER=${{ github.event.pull_request.number }}
             SOURCE_BRANCH=${{ github.event.pull_request.head.ref }}
             echo "PR Number: $PR_NUMBER"
