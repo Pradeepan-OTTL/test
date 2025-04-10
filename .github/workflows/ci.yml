@@ -55,7 +55,9 @@ jobs:
     name: Production Deployment
     # Ensure that ProdDeployment runs only when merged to master and has completed either Staging or Hotfix Staging deployment
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master'
-    needs: [StagingDeployment, hotfixStagingDeployment] # Add both staging jobs
+    needs: 
+      - StagingDeployment
+      - hotfixStagingDeployment  # Allow either staging job to trigger ProdDeployment
     runs-on: test
     environment:
       name: Production
