@@ -19,6 +19,7 @@ jobs:
     steps:
       - name: Deploy
         run: |
+            echo "Source branch: ${{ github.event.pull_request.head.ref }}"
             printenv
             echo DevDeployment! 
 
