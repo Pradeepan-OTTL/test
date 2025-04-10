@@ -55,7 +55,9 @@ jobs:
   ProdDeployment:
     name: Production Deployment
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master' || github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master' && startsWith(github.event.pull_request.head.ref, 'hotfix')
-    needs: [StagingDeployment, hotfixStagingDeployment]
+    needs:
+      - StagingDeployment
+      - hotfixStagingDeployment
     runs-on: test
     environment:
       name: Production
