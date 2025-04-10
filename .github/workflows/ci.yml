@@ -64,7 +64,7 @@ jobs:
       - name: Create Release Tag
         run: |
           # Fetch latest tags, default to v0.0.0 if no tags are found
-          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          LATEST_TAG=$(git tag -l | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n 1)
           echo "Latest Tag: $LATEST_TAG"
 
           # Check if the tag follows the vMAJOR.MINOR.PATCH format
