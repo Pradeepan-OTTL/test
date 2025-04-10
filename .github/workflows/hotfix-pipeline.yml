@@ -62,6 +62,8 @@ jobs:
 
       - name: Create Release Tag
         run: |
+          git fetch --tags
+          
           # Fetch latest tags, default to v0.0.0 if no tags are found
           LATEST_TAG=$(git tag -l | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n 1)
           echo "Latest Tag: $LATEST_TAG"
