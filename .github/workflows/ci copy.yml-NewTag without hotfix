@@ -12,7 +12,7 @@ permissions:
 jobs:
   DevDeployment:
     name: Dev Deployment
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master' || github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'hotfix')
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master'
     runs-on: test
     environment:
       name: Development
@@ -40,21 +40,10 @@ jobs:
     steps:
       - name: Deploy
         run: echo StagingDeployment!
-  
-  hotfixStagingDeployment:
-    name: Staging Deployment
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master'
-    needs: [DevDeployment]
-    runs-on: test
-    environment:
-      name: hotfixStaging
-    steps:
-      - name: Deploy
-        run: echo StagingDeployment!
 
   ProdDeployment:
     name: Production Deployment
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master' || github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'hotfix')
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master'
     needs: [StagingDeployment]
     runs-on: test
     environment:
@@ -65,7 +54,7 @@ jobs:
 
   CreateReleaseTag:
     name: Create Release Tag
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master' || github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'hotfix')
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master'
     needs: [ProdDeployment]
     runs-on: test
     steps:
@@ -109,4 +98,5 @@ jobs:
           git config user.email "github-actions@github.com"
           git tag $NEW_TAG
           git push origin $NEW_TAG
-
+      
+          
