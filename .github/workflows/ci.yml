@@ -64,7 +64,7 @@ jobs:
       - name: Create Release Tag
         run: |
           # Fetch latest tags, default to v0.0.0 if no tags are found
-          LATEST_TAG=$(git describe --tags --abbrev=0 || echo "v0.0.0")
+          LATEST_TAG=$(git describe --tags --abbrev=0)
           echo "Latest Tag: $LATEST_TAG"
 
           # Check if the tag follows the vMAJOR.MINOR.PATCH format
@@ -78,7 +78,7 @@ jobs:
           IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
 
           # Check if the source branch starts with "hotfix"
-          if [[ "${github.event.pull_request.head.ref}" == hotfix* ]]; then
+          if [[ "${{ github.event.pull_request.head.ref }}" == hotfix* ]]; then
             # Increment MINOR for hotfix branches, reset PATCH to 0
             MINOR=$((MINOR + 1))
             PATCH=0
