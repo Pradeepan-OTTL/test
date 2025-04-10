@@ -20,12 +20,8 @@ jobs:
       - name: Deploy
         run: |
             cat /home/ubuntu/actions-runner/_work/_temp/_github_workflow/event.json
-            COMMIT_MSG=$(git log -1 --pretty=%B)
-            echo "Commit message: $COMMIT_MSG"
-            SOURCE_BRANCH=$(echo "$COMMIT_MSG" | grep -oE 'from [^/]*/([^ ]+)' | awk '{print $2}' | cut -d'/' -f2)
-            echo "Extracted source branch: $SOURCE_BRANCH"
-            echo "source_branch=$SOURCE_BRANCH" >> $GITHUB_OUTPUT
-            echo "Source branch: ${{ github.event.pull_request.head.ref }}"
+            PR_NUMBER=$(curl -s -H "Authorization: token ${{ secrets.TOKEN_GITHUB }}" "https://api.github.com/repos/${{ github.repository }}/pulls?state=closed&sort=updated&direction=desc" | jq '.[0].number')
+            echo "Last PR Number: $PR_NUMBER"
             printenv
             echo DevDeployment! 
 
@@ -50,7 +46,7 @@ jobs:
       name: Production
     steps:
       - name: Deploy
-        run: false
+        run: echo ProdDeployment!
 
   CreateReleaseTag:
     name: Create Release Tag
