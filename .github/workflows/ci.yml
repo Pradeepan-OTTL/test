@@ -18,7 +18,9 @@ jobs:
       name: Development
     steps:
       - name: Deploy
-        run: echo DevDeployment! 
+        run: |
+            printenv
+            echo DevDeployment! 
 
   StagingDeployment:
     name: Staging Deployment
