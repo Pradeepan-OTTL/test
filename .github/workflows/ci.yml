@@ -19,6 +19,11 @@ jobs:
     steps:
       - name: Deploy
         run: |
+            COMMIT_MSG=$(git log -1 --pretty=%B)
+            echo "Commit message: $COMMIT_MSG"
+            SOURCE_BRANCH=$(echo "$COMMIT_MSG" | grep -oE 'from [^/]*/([^ ]+)' | awk '{print $2}' | cut -d'/' -f2)
+            echo "Extracted source branch: $SOURCE_BRANCH"
+            echo "source_branch=$SOURCE_BRANCH" >> $GITHUB_OUTPUT
             echo "Source branch: ${{ github.event.pull_request.head.ref }}"
             printenv
             echo DevDeployment! 
